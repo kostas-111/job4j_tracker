@@ -1,6 +1,5 @@
 package ru.job4j.tracker;
 
-/** @noinspection checkstyle:EmptyLineSeparator*/
 public class Item {
     private int id;
     private String name;
