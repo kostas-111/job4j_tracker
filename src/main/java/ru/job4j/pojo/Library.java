@@ -23,7 +23,7 @@ public class Library {
         }
         System.out.println("Only books named \"Clean code\"");
         for (int i = 0; i < books.length; i++) {
-            if (books[i].equals(java)) {
+            if (books[i].getName().equals(java.getName())) {
                 System.out.println(books[i].getName() + " - " + books[i].getAmount());
             }
         }
