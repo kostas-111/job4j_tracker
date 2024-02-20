@@ -34,11 +34,14 @@ public class StartUI {
                 System.out.print("Введите имя: ");
                 String name = scanner.nextLine();
                 Item item = new Item(id, name);
-                if (tracker.replace(id, item)) {
-                    System.out.println("Заявка изменена успешно.");
-                } else {
-                    System.out.println("Ошибка замены заявки.");
-                }
+                System.out.println(tracker.replace(id, item)
+                        ? "Заявка изменена успешно." : "Ошибка замены заявки.");
+            } else if (select == 3) {
+                System.out.println("=== Удаление заявки ===");
+                System.out.print("Введите id: ");
+                int id = Integer.parseInt(scanner.nextLine());
+                System.out.println(tracker.delete(id)
+                        ? "Заявка удалена успешно." : "Ошибка удаления заявки.");
             } else if (select == 6) {
                 run = false;
             }
