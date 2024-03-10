@@ -24,45 +24,39 @@ public class PasswordValidator {
         for (char symbol : password.toCharArray()) {
             if (Character.isUpperCase(symbol)) {
                 hasUpCase = true;
-                break;
+            }
+
+            if (Character.isLowerCase(symbol)) {
+                hasLowCase = true;
+            }
+
+            if (Character.isDigit(symbol)) {
+                hasDigit = true;
+            }
+
+            if (!Character.isLetterOrDigit(symbol)) {
+                hasSpecial = true;
             }
         }
+
         if (!hasUpCase) {
             throw new IllegalArgumentException(
                     "Password should contain at least one uppercase letter"
             );
         }
 
-        for (char symbol : password.toCharArray()) {
-            if (Character.isLowerCase(symbol)) {
-                hasLowCase = true;
-                break;
-            }
-        }
         if (!hasLowCase) {
             throw new IllegalArgumentException(
                     "Password should contain at least one lowercase letter"
             );
         }
 
-        for (char symbol : password.toCharArray()) {
-            if (Character.isDigit(symbol)) {
-                hasDigit = true;
-                break;
-            }
-        }
         if (!hasDigit) {
             throw new IllegalArgumentException(
                     "Password should contain at least one figure"
             );
         }
 
-        for (char symbol : password.toCharArray()) {
-            if (!Character.isLetterOrDigit(symbol)) {
-                hasSpecial = true;
-                break;
-            }
-        }
         if (!hasSpecial) {
             throw new IllegalArgumentException(
                     "Password should contain at least one special symbol"
