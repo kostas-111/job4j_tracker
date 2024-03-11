@@ -23,8 +23,8 @@ public final class Airbus extends Aircraft {
     }
 
     public void printCountEngine() {
-        System.out.println(name.equals("A380") ? "Количество двигателей равно: " + COUNT_ENGINE_A380
-                                                : "Количество двигателей равно: " + COUNT_ENGINE);
+        int count = "A380".equals(name) ? COUNT_ENGINE_A380 : COUNT_ENGINE;
+        System.out.println("Количество двигателей равно: " + count);
     }
 
     @Override
