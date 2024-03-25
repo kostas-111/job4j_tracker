@@ -4,17 +4,16 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import ru.job4j.tracker.output.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 class ValidateInputTest {
 
     @Test
     void whenInvalidInput() {
         Output output = new StubOutput();
-        ArrayList<String> inpAnsw = new ArrayList<>();
-        inpAnsw.add("one");
-        inpAnsw.add("1");
-        Input in = new MockInput(inpAnsw);
+        Input in = new MockInput(
+                Arrays.asList("one", "1")
+        );
         ValidateInput input = new ValidateInput(output, in);
         int selected = input.askInt("Enter menu:");
         assertThat(selected).isEqualTo(1);
@@ -23,9 +22,9 @@ class ValidateInputTest {
     @Test
     void whenValidInput() {
         Output output = new StubOutput();
-        ArrayList<String> inpAnsw = new ArrayList<>();
-        inpAnsw.add("1");
-        Input in = new MockInput(inpAnsw);
+        Input in = new MockInput(
+                Arrays.asList("1")
+        );
         ValidateInput input = new ValidateInput(output, in);
         int selected = input.askInt("Enter menu:");
         assertThat(selected).isEqualTo(1);
@@ -34,11 +33,9 @@ class ValidateInputTest {
     @Test
     void whenManyValidInput() {
         Output output = new StubOutput();
-        ArrayList<String> inpAnsw = new ArrayList<>();
-        inpAnsw.add("1");
-        inpAnsw.add("2");
-        inpAnsw.add("5");
-        Input in = new MockInput(inpAnsw);
+        Input in = new MockInput(
+                Arrays.asList("1", "2", "5")
+        );
         ValidateInput input = new ValidateInput(output, in);
         int selected = input.askInt("Enter menu:");
         assertThat(selected).isEqualTo(1);
@@ -53,9 +50,9 @@ class ValidateInputTest {
     @Test
     void whenMinusValidInput() {
         Output output = new StubOutput();
-        ArrayList<String> inpAnsw = new ArrayList<>();
-        inpAnsw.add("-1");
-        Input in = new MockInput(inpAnsw);
+        Input in = new MockInput(
+                Arrays.asList("-1")
+        );
         ValidateInput input = new ValidateInput(output, in);
         int selected = input.askInt("Enter menu:");
         assertThat(selected).isEqualTo(-1);

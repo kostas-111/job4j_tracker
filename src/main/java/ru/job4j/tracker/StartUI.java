@@ -7,7 +7,8 @@ import ru.job4j.tracker.input.ValidateInput;
 import ru.job4j.tracker.output.ConsoleOutput;
 import ru.job4j.tracker.output.Output;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StartUI {
     private final Output output;
@@ -16,14 +17,14 @@ public class StartUI {
         this.output = output;
     }
 
-    private void showMenu(ArrayList<UserAction> actions) {
+    private void showMenu(List<UserAction> actions) {
         output.println("Меню:");
-        for (UserAction act : actions) {
-            output.println(actions.indexOf(act) + ". " +  act.name());
+        for (int i = 0; i < actions.size(); i++) {
+            output.println(actions.indexOf(actions.get(i)) + ". " +  actions.get(i).name());
         }
     }
 
-    public void init(Input input, Tracker tracker, ArrayList<UserAction> actions) {
+    public void init(Input input, Tracker tracker, List<UserAction> actions) {
         boolean run = true;
         while (run) {
             showMenu(actions);
@@ -41,14 +42,15 @@ public class StartUI {
         Output output = new ConsoleOutput();
         Input input = new ValidateInput(output, new ConsoleInput());
         Tracker tracker = new Tracker();
-        ArrayList<UserAction> actions = new ArrayList<>();
-                actions.add(new CreateAction(output));
-                actions.add(new FindAllAction(output));
-                actions.add(new ReplaceAction(output));
-                actions.add(new DeleteAction(output));
-                actions.add(new FindByIdAction(output));
-                actions.add(new FindByNameAction(output));
-                actions.add(new ExitAction(output));
+        List<UserAction> actions = Arrays.asList(
+                new CreateAction(output),
+                new FindAllAction(output),
+                new ReplaceAction(output),
+                new DeleteAction(output),
+                new FindByIdAction(output),
+                new FindByNameAction(output),
+                new ExitAction(output)
+        );
         new StartUI(output).init(input, tracker, actions);
     }
 }
