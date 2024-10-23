@@ -118,11 +118,7 @@ public class SqlTracker implements Store {
                      connection.prepareStatement("SELECT * FROM items")) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Item item = new Item(rs.getInt(1),
-                        rs.getString(2),
-                        rs.getTimestamp(3).toLocalDateTime()
-                );
-                result.add(item);
+                result.add(createItem(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,11 +139,7 @@ public class SqlTracker implements Store {
             preparedStatement.setString(1, key);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Item item = new Item(rs.getInt(1),
-                        rs.getString(2),
-                        rs.getTimestamp(3).toLocalDateTime()
-                );
-                result.add(item);
+                result.add(createItem(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,14 +161,27 @@ public class SqlTracker implements Store {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                item = new Item(rs.getInt(1),
-                                rs.getString(2),
-                                rs.getTimestamp(3).toLocalDateTime()
-                                );
+                item = createItem(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return item;
+    }
+
+    /**
+     * Метод создает объект Item с параметрами из БД
+     */
+    private Item createItem(ResultSet rs) {
+        Item result = null;
+        try {
+            result = new Item(rs.getInt(1),
+                                   rs.getString(2),
+                                   rs.getTimestamp(3).toLocalDateTime()
+                                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
