@@ -7,6 +7,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+import java.util.Collections;
 import java.util.List;
 
 public class HbmTracker implements Store, AutoCloseable {
@@ -21,32 +23,33 @@ public class HbmTracker implements Store, AutoCloseable {
 
     @Override
     public Item add(Item item) {
+        Item result = null;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
             session.save(item);
             session.getTransaction().commit();
-            return item;
+            result = item;
         } catch (Exception e) {
             LOG.error("Ошибка при добавлении заявки: {}", item, e);
-            throw new RuntimeException("Ошибка при добавлении заявки", e);
         }
+        return result;
     }
 
     @Override
     public boolean replace(int id, Item item) {
+        int updated = 0;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            int updated = session.createQuery(
+            updated = session.createQuery(
                     "UPDATE Item SET name = :fName WHERE id = :fId")
                     .setParameter("fName", item.getName())
                     .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
-            return updated > 0;
         } catch (Exception e) {
             LOG.error("Ошибка при изменении заявки с id: {}", id, e);
-            throw new RuntimeException("Ошибка при изменении заявки", e);
         }
+        return updated > 0;
     }
 
     @Override
@@ -60,53 +63,52 @@ public class HbmTracker implements Store, AutoCloseable {
             session.getTransaction().commit();
         } catch (Exception e) {
             LOG.error("Ошибка при удалении заявки с id: {}", id, e);
-            throw new RuntimeException("Ошибка при удалении заявки", e);
         }
     }
 
     @Override
     public List<Item> findAll() {
+        List<Item> result = Collections.emptyList();
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            List<Item> result = session.createQuery("from Item", Item.class).list();
+            result = session.createQuery("from Item", Item.class).list();
             session.getTransaction().commit();
-            return result;
         } catch (Exception e) {
             LOG.error("Ошибка поиска всех заявок", e);
-            throw new RuntimeException("Ошибка поиска всех заявок", e);
         }
+        return result;
     }
 
     @Override
     public List<Item> findByName(String key) {
+        List<Item> result = Collections.emptyList();
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            List<Item> result = session.createQuery(
+            result = session.createQuery(
                     "from Item as i where i.name = :fName", Item.class)
                     .setParameter("fName", key)
                     .list();
             session.getTransaction().commit();
-            return result;
         } catch (Exception e) {
             LOG.error("Ошибка при поиске заявки с наименованием: {}", key, e);
-            throw new RuntimeException("Ошибка при поиске заявке по ниаменованию", e);
         }
+        return result;
     }
 
     @Override
     public Item findById(int id) {
+        Item result = null;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            Item result = session.createQuery(
+            result = session.createQuery(
                             "from Item as i where i.id = :fId", Item.class)
                     .setParameter("fId", id)
                     .uniqueResult();
             session.getTransaction().commit();
-            return result;
         } catch (Exception e) {
             LOG.error("Ошибка при поиске заявки по id: {}", id, e);
-            throw new RuntimeException("Ошибка при поиске заявки по id", e);
         }
+        return result;
     }
 
     @Override
