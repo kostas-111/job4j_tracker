@@ -1,6 +1,6 @@
 package ru.job4j.tracker.output;
 
-import ru.job4j.tracker.Item;
+import ru.job4j.tracker.entities.Item;
 
 import java.util.Comparator;
 
