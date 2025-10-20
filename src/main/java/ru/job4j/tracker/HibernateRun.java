@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.tracker.entities.Item;
 import ru.job4j.tracker.entities.Role;
 import ru.job4j.tracker.entities.User;
+import ru.job4j.tracker.entities.UserMessenger;
 
 import java.util.List;
 
@@ -22,10 +23,17 @@ public class HibernateRun {
             create(role, sf);
             var user = new User();
             user.setName("Admin Admin");
+            user.setMessengers(List.of(
+                new UserMessenger("tg", "@tg"),
+                new UserMessenger("wu", "@wu")
+            ));
             user.setRole(role);
             create(user, sf);
-            findAll(User.class, sf)
-                .forEach(System.out::println);
+            var stored = sf.openSession()
+                .createQuery("FROM User WHERE id = :fId", User.class)
+                .setParameter("fId", user.getId())
+                .getSingleResult();
+            stored.getMessengers().forEach(System.out::println);
         }  catch (Exception e) {
             e.printStackTrace();
         } finally {
