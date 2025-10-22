@@ -1,11 +1,10 @@
-package ru.job4j.tracker;
+package ru.job4j.tracker.runs;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.job4j.tracker.entities.Item;
 import ru.job4j.tracker.entities.Role;
 import ru.job4j.tracker.entities.User;
 import ru.job4j.tracker.entities.UserMessenger;
