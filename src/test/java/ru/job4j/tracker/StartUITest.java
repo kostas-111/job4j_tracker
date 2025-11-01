@@ -14,6 +14,9 @@ import java.util.List;
 import ru.job4j.tracker.runs.StartUI;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class StartUITest {
 
@@ -69,11 +72,11 @@ class StartUITest {
     void whenExit() {
         Output output = new StubOutput();
         Input input = new MockInput(
-                Arrays.asList("0")
+            List.of("0")
         );
         MemTracker memTracker = new MemTracker();
-        List<UserAction> actions = Arrays.asList(
-                new ExitAction(output)
+        List<UserAction> actions = List.of(
+            new ExitAction(output)
         );
         new StartUI(output).init(input, memTracker, actions);
         assertThat(output.toString()).isEqualTo(
@@ -261,8 +264,8 @@ class StartUITest {
         Input input = new MockInput(
                 Arrays.asList("7", "0"));
         MemTracker memTracker = new MemTracker();
-        List<UserAction> actions = Arrays.asList(
-                new ExitAction(output)
+        List<UserAction> actions = List.of(
+            new ExitAction(output)
         );
         new StartUI(output).init(input, memTracker, actions);
         String ln = System.lineSeparator();
@@ -273,6 +276,151 @@ class StartUITest {
                         + "Меню:" + ln
                         + "0. Завершить программу" + ln
                         + "=== Завершение программы ===" + ln
+        );
+    }
+
+    @Test
+    void whenDeleteItemWithMockito() {
+        Output output = new StubOutput();
+        MemTracker memTracker = new MemTracker();
+        Item item = memTracker.add(new Item("Deleted item"));
+
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(0, item.getId(), 1);
+
+        List<UserAction> actions = Arrays.asList(
+            new DeleteAction(output),
+            new ExitAction(output)
+        );
+
+        new StartUI(output).init(input, memTracker, actions);
+
+        assertThat(memTracker.findById(item.getId())).isNull();
+    }
+
+    @Test
+    void whenDeleteItemIsFailedWithMockito() {
+        Output output = new StubOutput();
+        MemTracker memTracker = new MemTracker();
+        Item one = memTracker.add(new Item("test1"));
+        one.setId(1);
+
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(0, 999, 1);
+
+        List<UserAction> actions = Arrays.asList(
+            new DeleteAction(output),
+            new ExitAction(output)
+        );
+
+        new StartUI(output).init(input, memTracker, actions);
+
+        String ln = System.lineSeparator();
+        assertThat(output.toString()).isEqualTo(
+            "Меню:" + ln
+                + "0. Удалить заявку" + ln
+                + "1. Завершить программу" + ln
+                + "=== Удаление заявки ===" + ln
+                + "Ошибка удаления. Заявка с введенным id: " + 999 + " не найдена." + ln
+                + "Меню:" + ln
+                + "0. Удалить заявку" + ln
+                + "1. Завершить программу" + ln
+                + "=== Завершение программы ===" + ln
+        );
+    }
+
+    @Test
+    void whenFindByNameActionTestOutputIsSuccessfullyWithMockito() {
+        Output output = new StubOutput();
+        MemTracker memTracker = new MemTracker();
+        Item one = memTracker.add(new Item("test1"));
+        Item two = memTracker.add(new Item("test2"));
+        String findName = "test2";
+
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(0, 1);
+        when(input.askStr(any(String.class))).thenReturn(findName);
+
+        List<UserAction> actions = Arrays.asList(
+            new FindByNameAction(output),
+            new ExitAction(output)
+        );
+
+        new StartUI(output).init(input, memTracker, actions);
+
+        String ln = System.lineSeparator();
+        assertThat(output.toString()).isEqualTo(
+            "Меню:" + ln
+                + "0. Показать заявки по имени" + ln
+                + "1. Завершить программу" + ln
+                + "=== Вывод заявок по имени ===" + ln
+                + two + ln
+                + "Меню:" + ln
+                + "0. Показать заявки по имени" + ln
+                + "1. Завершить программу" + ln
+                + "=== Завершение программы ===" + ln
+        );
+    }
+
+    @Test
+    void whenFindByNameActionTestOutputIsFailedWithMockito() {
+        Output output = new StubOutput();
+        MemTracker memTracker = new MemTracker();
+        Item one = memTracker.add(new Item("test1"));
+        Item two = memTracker.add(new Item("test2"));
+        String findName = "test100";
+
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(0, 1);
+        when(input.askStr(any(String.class))).thenReturn(findName);
+
+        List<UserAction> actions = Arrays.asList(
+            new FindByNameAction(output),
+            new ExitAction(output)
+        );
+
+        new StartUI(output).init(input, memTracker, actions);
+
+        String ln = System.lineSeparator();
+        assertThat(output.toString()).isEqualTo(
+            "Меню:" + ln
+                + "0. Показать заявки по имени" + ln
+                + "1. Завершить программу" + ln
+                + "=== Вывод заявок по имени ===" + ln
+                + "Заявки с именем: " + findName + " не найдены." + ln
+                + "Меню:" + ln
+                + "0. Показать заявки по имени" + ln
+                + "1. Завершить программу" + ln
+                + "=== Завершение программы ===" + ln
+        );
+    }
+
+    @Test
+    void whenFindByIdActionTestOutputIsSuccessfullyWithMockito() {
+        Output output = new StubOutput();
+        MemTracker memTracker = new MemTracker();
+        Item one = memTracker.add(new Item("test1"));
+        Item two = memTracker.add(new Item("test2"));
+
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(0, one.getId(), 1);
+
+        List<UserAction> actions = Arrays.asList(
+            new FindByIdAction(output),
+            new ExitAction(output)
+        );
+        new StartUI(output).init(input, memTracker, actions);
+        String ln = System.lineSeparator();
+        assertThat(output.toString()).isEqualTo(
+            "Меню:" + ln
+                + "0. Показать заявку по id" + ln
+                + "1. Завершить программу" + ln
+                + "=== Вывод заявки по id ===" + ln
+                + one + ln
+                + "Меню:" + ln
+                + "0. Показать заявку по id" + ln
+                + "1. Завершить программу" + ln
+                + "=== Завершение программы ===" + ln
         );
     }
 }

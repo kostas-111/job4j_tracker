@@ -2,23 +2,27 @@ package ru.job4j.tracker.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "items")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @EqualsAndHashCode.Include
     private Integer id;
 
+    @EqualsAndHashCode.Include
     private String name;
 
     private LocalDateTime created = LocalDateTime.now();
@@ -67,25 +71,4 @@ public class Item {
                 + ", created=" + created.format(FORMATTER)
                 + '}';
     }
-
-    /*
-    Переопределяем equals и hashCode вручную,
-    они не должны учитывать поле created
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Item item = (Item) o;
-        return id == item.id && Objects.equals(name, item.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-}
+ }
